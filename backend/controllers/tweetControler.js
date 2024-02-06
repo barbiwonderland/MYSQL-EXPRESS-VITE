@@ -2,6 +2,20 @@
 
 const tweetModel = require('../models/tweetModel');
 
+const createTweetController = async (req, res, next) => {
+    const { content, user_id } = req.body;
+
+    try {
+        if (!content || !user_id) {
+            return res.status(400).json({ error: 'Content and user_id are required' });
+        }
+
+        const newTweet = await tweetModel.createTweet({ content, user_id });
+        res.status(201).json(newTweet);
+    } catch (error) {
+        next(error);
+    }
+};
 
 const getAllTweets = async (req, res) => {
     try {
@@ -12,6 +26,7 @@ const getAllTweets = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 
 const getTweetById = async (req, res) => {
     try {
@@ -65,6 +80,7 @@ const deleteTweet = async (req, res) => {
 };
 
 module.exports = {
+    createTweetController,
     getAllTweets,
     getTweetById,
     updateTweet,

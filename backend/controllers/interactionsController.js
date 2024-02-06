@@ -11,6 +11,20 @@ const getAllInteractions = async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+const createInteractionController = async (req, res, next) => {
+    const { follower_id, followed_id } = req.body;
+
+    try {
+        if (!follower_id || !followed_id) {
+            return res.status(400).json({ error: 'follower_id and followed_id are required' });
+        }
+
+        const newInteraction = await interactionModel.createInteraction({ follower_id, followed_id });
+        res.status(201).json(newInteraction);
+    } catch (error) {
+        next(error);
+    }
+};
 
 const getInteractionById = async (req, res) => {
     try {
@@ -64,6 +78,7 @@ const deleteInteraction = async (req, res) => {
 };
 
 module.exports = {
+    createInteractionController,
     getAllInteractions,
     getInteractionById,
     updateInteraction,

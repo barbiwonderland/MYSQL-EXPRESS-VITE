@@ -1,5 +1,16 @@
 const db = require('../db/index');
 
+const createTweet = async (tweetData) => {
+    const { content, user_id } = tweetData;
+
+    const [result] = await db.execute(
+        'INSERT INTO tweets (content, user_id) VALUES (?, ?)',
+        [content, user_id]
+    );
+
+    return { id: result.insertId, ...tweetData };
+};
+
 const getAllTweets = async () => {
     const [rows] = await db.execute('SELECT * FROM tweets');
     return rows;
@@ -28,6 +39,7 @@ const deleteTweet = async (id) => {
 };
 
 module.exports = {
+    createTweet,
     getAllTweets,
     getTweetById,
     updateTweet,

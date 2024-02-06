@@ -2,7 +2,20 @@
 
 const userModel = require('../models/usersModel');
 
+const createUser = async (req, res, next) => {
+  const { username, email, hashed_password } = req.body;
+  console.log(req.body)
+  try {
+    if (!username || !email || !hashed_password) {
+      return res.status(400).json({ error: 'username, email, and hashed_password are required' });
+    }
 
+    const newUser = await userModel.createUser({ username, email, hashed_password });
+    res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
+};
 const getAllUsers = async (req, res) => {
   try {
     const users = await userModel.getAllUsers();
@@ -65,6 +78,7 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
+  createUser,
   getAllUsers,
   getUserById,
   updateUser,

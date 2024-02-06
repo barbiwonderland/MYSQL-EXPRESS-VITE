@@ -13,6 +13,18 @@ const getUserById = async (id) => {
 };
 
 
+const createUser = async (userData) => {
+  const { username, email, hashed_password } = userData;
+
+  // Verificar si los valores requeridos están definidos
+  if (!username || !email || !hashed_password) {
+    throw new Error('Name, email, and hashed_password are required');
+  }
+
+  const query = 'INSERT INTO users (username, email, hashed_password) VALUES (?, ?, ?)';
+  const [result] = await db.execute(query, [username, email, hashed_password]);
+  return { id: result.insertId, ...userData };
+};
 const updateUser = async (id, newData) => {
   const { username, email, hashed_password } = newData;
 
@@ -30,6 +42,7 @@ const deleteUser = async (id) => {
 };
 
 module.exports = {
+  createUser,
   getAllUsers,
   getUserById,
   updateUser,

@@ -1,5 +1,17 @@
 const db = require('../db/index');
 
+
+const createInteraction = async (interactionData) => {
+    const { follower_id, followed_id } = interactionData;
+
+    const [result] = await db.execute(
+        'INSERT INTO tabla_relaciones (follower_id, followed_id) VALUES (?, ?)',
+        [follower_id, followed_id]
+    );
+
+    return { id: result.insertId, ...interactionData };
+};
+
 const getAllInteraction = async () => {
     const [rows] = await db.execute('SELECT * FROM tabla_relaciones');
     return rows;
@@ -27,6 +39,7 @@ const deleteInteraction = async (id) => {
 };
 
 module.exports = {
+    createInteraction,
     getAllInteraction,
     getInteractionById,
     updateInteraction,
